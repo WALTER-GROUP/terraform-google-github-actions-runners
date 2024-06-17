@@ -89,18 +89,22 @@ resource "google_secret_manager_secret" "gh-secret" {
     }
   }
 }
+
 resource "google_secret_manager_secret_version" "gh-secret-version" {
   provider = google-beta
   secret   = google_secret_manager_secret.gh-secret.id
   secret_data = jsonencode({
-    "REPO_NAME"    = var.repo_name
-    "REPO_OWNER"   = var.repo_owner
-    "RUNNER_GROUP" = var.gh_runner_group
-    "GITHUB_TOKEN" = var.gh_token
-    "LABELS"       = join(",", var.gh_runner_labels)
+    "REPO_NAME"           = var.repo_name
+    "REPO_OWNER"          = var.repo_owner
+    "RUNNER_VERSION"      = var.gh_runner_version
+    "RUNNER_GROUP"        = var.gh_runner_group
+    "GITHUB_TOKEN"        = var.gh_token
+    "GHA_INSTALLATION_ID" = var.gha_installation_id
+    "GHA_CLIENT_ID"       = var.gha_client_id
+    "GHA_PRIVATE_KEY"     = file(var.gha_private_key)
+    "LABELS"              = join(",", var.gh_runner_labels)
   })
 }
-
 
 resource "google_secret_manager_secret_iam_member" "gh-secret-member" {
   provider  = google-beta
@@ -154,13 +158,12 @@ module "mig_template" {
   Runner MIG
  *****************************************/
 module "mig" {
-  source             = "terraform-google-modules/vm/google//modules/mig"
-  version            = "~> 11.0"
-  project_id         = var.project_id
-  subnetwork_project = var.subnetwork_project != "" ? var.subnetwork_project : var.project_id
-  hostname           = local.instance_name
-  region             = var.region
-  instance_template  = module.mig_template.self_link
+  source            = "terraform-google-modules/vm/google//modules/mig"
+  version           = "~> 11.0"
+  project_id        = var.project_id
+  hostname          = local.instance_name
+  region            = var.region
+  instance_template = module.mig_template.self_link
 
   /* autoscaler */
   autoscaling_enabled = true
