@@ -150,9 +150,7 @@ module "mig_template" {
     }, {
     "shutdown-script" = local.shutdown_script
   }, var.custom_metadata)
-  tags = [
-    "gh-runner-vm"
-  ]
+  tags = concat(["gh-runner-vm"], var.instance_tags)
 }
 /*****************************************
   Runner MIG
