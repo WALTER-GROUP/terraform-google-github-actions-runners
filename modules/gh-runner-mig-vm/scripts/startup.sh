@@ -31,7 +31,10 @@ setup_additional_packages () {
         # shellcheck disable=SC1091
         echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm'
     } >> /etc/bash.bashrc
-    source /etc/bash.bashrc
+    #sourcing from /etc/bash.bashrc to make nvm available doesnt work in the script
+    NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+    export NVM_DIR
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
     nvm install --lts
 
 }
