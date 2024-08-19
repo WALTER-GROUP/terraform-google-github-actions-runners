@@ -26,10 +26,12 @@ setup_additional_packages () {
     } >> /root/.ssh/known_hosts
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
     # shellcheck disable=SC1090
-    NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-    export NVM_DIR
-    # shellcheck disable=SC1091
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+    {
+        echo 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"'
+        # shellcheck disable=SC1091
+        echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm'
+    } >> /etc/skel/.bashrc
+    source /etc/skel/.bashrc
     nvm install --lts
 
 }
