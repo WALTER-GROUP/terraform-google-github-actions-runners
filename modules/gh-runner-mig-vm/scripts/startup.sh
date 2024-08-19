@@ -30,8 +30,8 @@ setup_additional_packages () {
         echo 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"'
         # shellcheck disable=SC1091
         echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm'
-    } >> /etc/skel/.bashrc
-    source /etc/skel/.bashrc
+    } >> /etc/bash.bashrc
+    source /etc/bash.bashrc
     nvm install --lts
 
 }
